@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="default.css"/>
+        <h:outputStylesheet library="css" name="estiloBase.css"/>
+        <h:outputScript library="js" name="otros.js" />
+        <h:outputScript library="js" name="es.js" />
+        <title>CapacitySoft</title>
+
+    </h:head>
+
+    <h:body class="jumbotron">
+
+        <div id="top" >
+            <h:form>  
+                <p:growl id="messages"/>
+
+                <p:menubar>
+                    <p:submenu label="Inicio" icon="ui-icon-document">
+                        <p:menuitem  icon="ui-icon-contact" value="Capacitacion"  url="./Capacitacion.xhtml"/>
+                        <p:menuitem icon="ui-icon-contact" value="Capacitados"  url="./Capacitado.xhtml"/>
+                        <p:menuitem icon="ui-icon-contact" value="Capacitadores"  url="./Capacitador.xhtml"/>
+                        <p:menuitem icon="ui-icon-contact" value="Responsables"  url="./Responsable.xhtml"/>
+                        <p:menuitem icon="ui-icon-contact" value="Sectores"  url="./Sector.xhtml"/>
+                        <p:menuitem icon="ui-icon-contact" value="Evaluaciones"  url="./Evaluacion.xhtml"/>
+                        <p:separator />
+                        <p:menuitem value="Quit" url="#" />
+                    </p:submenu>
+
+                    <p:submenu label="Help" icon="ui-icon-help">
+                    </p:submenu>
+
+                    <p:menuitem value="Quit" url="http://www.primefaces.org" icon="ui-icon-close" />
+
+                </p:menubar>
+            </h:form>
+        </div>
+
+        <div id="content" > <!--class="center_content"> -->
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+
+        <div id="bottom">
+            <!--
+            <div id="pie_index">
+                <div style="text-align: right; float: right" id="google_translate_element">                
+                </div>
+                <center>Universidad Nacional de Loja</center>
+            </div>
+        
+            -->
+        </div>
+    </h:body>
+
+</html>

@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./WEB-INF/Base.xhtml">
+
+            <ui:define name="content">
+              <h:form>
+                    <p:growl id="messages" showDetail="true" />
+                    <h:panelGrid columnClasses="value">
+                        <p:schedule id="schedule" value="#{calendarioView.eventModel}" widgetVar="myschedule" locale="es">
+                            <p:ajax event="dateSelect" listener="#{calendarioView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <p:ajax event="eventSelect" listener="#{calendarioView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <p:ajax event="eventMove" listener="#{calendarioView.onEventMove}" update="messages" />
+                            <p:ajax event="eventResize" listener="#{calendarioView.onEventResize}" update="messages" />
+                        </p:schedule>
+                    </h:panelGrid>
+                    <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+                        <h:panelGrid id="eventDetails" columns="2">
+                            <p:outputLabel for="tema" value="Tema:" />
+                            <p:inputText id="tema" value="#{calendarioView.capacitacion.tema}" required="true" requiredMessage="Especifique un tema a la capacitación"/>
+                            <p:outputLabel for="fechainicio" value="Fecha de inicio:" />
+                            <p:inputMask id="fechainicio" value="#{calendarioView.capacitacion.fechaInicio}" mask="99/99/9999">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </p:inputMask>
+                            <p:outputLabel for="fechafin" value="Fecha de fin:" />
+                            <p:inputMask id="fechafin" value="#{calendarioView.capacitacion.fechaFin}" mask="99/99/9999">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </p:inputMask>
+                            <p:outputLabel for="horaInicio" value="Hora inicio:" />
+                            <p:inputText id="horaInicio" value="#{calendarioView.capacitacion.horaInicio}" required="true" requiredMessage="Necesita un titulo">
+                            <f:convertDateTime pattern="HH:mm:ss" />
+                            </p:inputText>
+                            <p:outputLabel for="horaFin" value="Hora fin:" />
+                            <p:inputText id="horaFin" value="#{calendarioView.capacitacion.horaFin}" required="true" requiredMessage="Necesita un titulo">
+                                <f:convertDateTime pattern="HH:mm:ss" />
+                            </p:inputText>
+                            <p:outputLabel for="sector" value="sector:" />
+                            <p:inputText id="sector" value="#{calendarioView.capacitacion.sectorId}" required="true" requiredMessage="Necesita un titulo"/>
+                            
+                            <p:commandButton type="reset" value="Reset" />
+                            <p:commandButton id="addButton" value="Save" actionListener="#{calendarioView.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                        </h:panelGrid>
+                    </p:dialog>    
+                </h:form>
+
+                <h:form>
+                    <p:dialog widgetVar="nuevaCapacitacion" header="Nueva Capacitacion" showEffect="clip" hideEffect="clip">
+                        <h:panelGrid id="eventDetails" columns="2">
+                            <h:outputLabel for="title" value="Tema:" />
+                            <p:inputText id="title" value="#{calendarioView.capacitacion.tema}"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+
+                <style type="text/css">
+                    .value {
+                        width: 1000px;
+                    }
+                </style>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

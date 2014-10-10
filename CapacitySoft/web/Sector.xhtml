@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./WEB-INF/Base.xhtml">
+
+            <ui:define name="content">
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_* INICIO Tabla Capacitadores _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <div class="contenedor">
+                    <h3 class="titulos_tablas">Lista de Sectores</h3>
+                    <br/>
+                    <p:dataTable widgetVar="capTable" id="dataTable" var="sec"
+                                 value="#{sectorBean.listaSectores}" paginator="true"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} 
+                                 {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" editable="true" rendered="true">
+
+                        <f:facet name="header" > Lista de sectores</f:facet>
+
+                        <p:column style="width:74%" headerText="Nombres">
+                            <f:facet name="header">Nombres</f:facet>
+                            <h:outputText value="#{sec.nombre}" />
+                        </p:column>
+
+                        <!-- lista de iconos  jqueryui.com/themeroller/
+                        http://www.petefreitag.com/cheatsheets/jqueryui-icons/
+                        http://jquery-ui.googlecode.com/svn/tags/1.6rc5/tests/static/icons.html -->   
+
+                        <p:column style="width:20%"> 
+                            <h:form id="formAgregarCarrera"> 
+                                <p:commandButton value="Agregar Carreras" action="#{sectorBean.carreraBean.obtenerSector(sec)}">
+                                </p:commandButton>             
+                            </h:form>
+                        </p:column>
+
+                        <p:column style="width:16%"> 
+                            <h:form id="formVerCap">                    
+                                <p:commandButton id="modalVer" update=":formVer" icon="ui-icon-contact" 
+                                                 oncomplete="PF('Ver').show();" title="Ver Datos">
+                                    <f:setPropertyActionListener value="#{sec}" target="#{sectorBean.sector}"/>
+                                </p:commandButton>
+
+                                <p:commandButton id="modalEditar" update=":formEditar" icon="ui-icon-pencil" oncomplete="PF('Editar').show();" title="Editar Datos">
+                                    <f:setPropertyActionListener value="#{sec}" target="#{sectorBean.sector}"/>
+                                </p:commandButton>
+
+                                <p:commandButton id="selectEliminar" update=":formEliminar" 
+                                                 oncomplete="PF('Eliminar').show();" icon="ui-icon-trash" title="Eliminar" >
+                                    <f:setPropertyActionListener value="#{sec}" target="#{sectorBean.sector}"/>
+                                </p:commandButton>
+                            </h:form>
+                        </p:column>
+
+                    </p:dataTable> 
+                </div>
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_* FIN Tabla Capaictadores _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <br/>
+                <div>
+                    <ul class="botones">
+                        <li>
+                            <h:form id="crear">
+                                <p:commandButton id="selectCrear" update=":formCrear" 
+                                                 oncomplete="PF('Crear').show();" value="Crear">
+                                </p:commandButton>
+                            </h:form>
+                        </li>
+                    </ul>               
+                </div>
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ INICIO Modal crear un Capacitador _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+                <h:form id="formCrear">
+                    <p:dialog header="Nuevo Capacitador" widgetVar="Crear" modal="true" height="70">   
+                        <p:growl id="msgs1"/>
+                        <h:panelGrid class="panel" columns="2" >
+                            <p:outputLabel for="nombres" value="Nombres:"/>
+                            <p:inputText id="nombres" value="#{sectorBean.sector.nombre}" required="true" requiredMessage="Especifique el nombre del sector" onkeypress="return validarLetras(event)"/> 
+                            <p:commandButton value="Limpiar" type="reset" />
+                            <p:commandButton update="msgs1 :dataTable" action="#{sectorBean.guardarSector()}" value="Aceptar"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ FIN Modal Crear un Capacitador _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ INICIO Modal Ver un Capacitador _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+                <h:form id="formVer">
+                    <p:dialog header="Modal Dialog" widgetVar="Ver" modal="true" height="80">
+                        <h:panelGrid class="panel" columns="2" >
+                            <p:outputLabel style="font-weight:bold;" value="Nombre: " />
+                            <p:outputLabel value="#{sectorBean.sector.nombre}" />                             
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_  FIN Modal Ver un Capacitador  *_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ INICIO Modal Editar un Capacitador _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+                <h:form id="formEditar">
+                    <p:dialog header="Modal Dialog" widgetVar="Editar" modal="true" height="500">
+                        <p:growl id="msgs1"/>
+                        <h:panelGrid class="panel" columns="2" >
+                            <p:outputLabel for="nombre" value="Nombre: " />
+                            <p:inputText id="nombre" value="#{sectorBean.sector.nombre}" required="true" requiredMessage="Especifique el nombre del sector" onkeypress="return validarLetras(event)"/>                             
+                            <p:commandButton value="Cancelar" onclick="reload();"/>
+                            <p:commandButton update="msgs1 :dataTable" action="#{sectorBean.editarSector()}" value="Editar" />
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_  FIN Modal Editar un Capacitador  *_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ INICIO Modal Eliminar un Capacitador _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+                <h:form id="formEliminar">
+                    <p:dialog header="Modal Dialog" widgetVar="Eliminar" modal="true" height="100">
+                        <h:panelGrid class="panel" columns="2" >
+                            <p:outputLabel value="Esta seguro de eliminar al capacitador &nbsp; #{sectorBean.sector.nombre}" />
+                            <br></br>
+                            <p:commandButton value="Cancelar" onclick="reload();"/>
+                            <p:commandButton action="#{sectorBean.eliminarSector()}" value="Aceptar"  onclick="reload();"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ FIN Modal Eliminar un Capacitador _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

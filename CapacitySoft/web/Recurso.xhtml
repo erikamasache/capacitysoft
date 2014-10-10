@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./WEB-INF/Base.xhtml">
+
+            <ui:define name="content">
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_* INICIO Tabla Recursos _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <div class="contenedor">
+                    <h3 class="titulos_tablas">Lista de Recursos</h3>
+                    <br/>
+                    <p:dataTable widgetVar="capTable" id="dataTable" var="rec"
+                                 value="#{recursoBean.listaRecursos}" paginator="true"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} 
+                                 {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" editable="true" rendered="true">
+
+                        <p:column style="width:20%" headerText="Nombres">
+                            <f:facet name="header">Nombre</f:facet>
+                            <h:outputText value="#{rec.nombre}" />
+                        </p:column>
+
+                        <!-- lista de iconos  jqueryui.com/themeroller/
+                       http://www.petefreitag.com/cheatsheets/jqueryui-icons/
+                       http://jquery-ui.googlecode.com/svn/tags/1.6rc5/tests/static/icons.html -->   
+
+                        <p:column style="width:7.5em"> 
+                            <h:form id="formVerCap">                    
+                                <p:commandButton id="modalEditar" update=":formVer" icon="ui-icon-contact" oncomplete="PF('Ver').show();" title="Ver Datos">
+                                    <f:setPropertyActionListener value="#{rec}" target="#{editarRecursoBean.recurso.nombre}"/>
+                                </p:commandButton>
+                   
+                                <p:commandButton id="modalEditar" update=":formEditar" icon="ui-icon-pencil" oncomplete="PF('Editar').show();" title="Editar Datos">
+                                    <f:setPropertyActionListener value="#{rec}" target="#{editarRecursoBean.recurso.nombre}"/>
+                                </p:commandButton>
+                            
+                                <p:commandButton id="selectEliminar" update=":formEliminar" 
+                                                 oncomplete="PF('Eliminar').show();" icon="ui-icon-trash" title="Eliminar" >
+                                    <f:setPropertyActionListener value="#{rec}" target="#{editarRecursoBean.recurso.nombre}"/>
+                                </p:commandButton>
+                            </h:form>
+                        </p:column>
+
+                    </p:dataTable> 
+                </div>
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_* FIN Tabla Recursos _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <br/>
+                <div>
+                    <ul class="botones">
+                        <li>
+                            <h:form id="crear">
+                                <p:commandButton id="selectCrear" update=":formCrear" 
+                                                 oncomplete="PF('Crear').show();" value="Crear">
+                                </p:commandButton>
+                            </h:form>
+                        </li>
+                    </ul>               
+                </div>
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ INICIO Modal crear un Recurso _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+                <h:form id="formCrear">
+                    <p:dialog header="Nuevo Capacitador" widgetVar="Crear" modal="true" height="500">   
+                        <h:panelGrid class="panel" columns="2" >
+                            <h:outputLabel class="txtLabel"  value="Nombres:"/>
+                            <h:inputText class="form-control"  value="#{recursoBean.recurso.nombre}" /> 
+                            <p:commandButton action="#{recursoBean.guardarRecurso()}" value="Aceptar"  onclick="reload();"/>
+
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ FIN Modal Crear un Recurso _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ INICIO Modal Ver un Recurso _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+                <h:form id="formVer">
+                    <p:dialog header="Modal Dialog" widgetVar="Ver" modal="true" height="500" width="500">
+                        <h:panelGrid class="panel" columns="2" >
+                            <h:outputLabel class="txtLabel"  value="Nombre: " />
+                            <h:outputText class="txtLabel" value="#{editarRecursoBean.recurso.nombre}" /> 
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_  FIN Modal Ver un Recurso  *_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ INICIO Modal Editar un Recurso _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+                <h:form id="formEditar">
+                    <p:dialog header="Modal Dialog" widgetVar="Editar" modal="true" height="500">
+                        <h:panelGrid class="panel" columns="2" >
+                            <h:outputLabel class="txtLabel"  value="Nombre: " />
+                            <h:inputText class="form-control" value="#{editarRecursoBean.recurso.nombre}" />
+                            <p:commandButton action="#{editarRecursoBean.editarRecurso()}" value="Editar"  onclick="reload();"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_  FIN Modal Editar un Recurso  *_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ INICIO Modal Eliminar un Recurso _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+                <h:form id="formEliminar">
+                    <p:dialog header="Modal Dialog" widgetVar="Eliminar" modal="true" height="100">
+                        <h:panelGrid class="panel" columns="2" >
+                            <h:outputLabel class="txtLabel"  
+                                           value="Esta seguro de eliminar &nbsp; #{editarRecursoBean.recurso.nombre}" />
+                            <br></br>
+                            <p:commandButton value="Cancelar" onclick="reload();"/>
+                            <p:commandButton action="#{editarRecursoBean.eliminarRecurso()}" value="Aceptar"  onclick="reload();"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
+                <!--_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_ FIN Modal Eliminar un Recurso  _*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*-->
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
