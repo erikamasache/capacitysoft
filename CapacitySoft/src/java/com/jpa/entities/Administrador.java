@@ -23,8 +23,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
- * @author ERIKA
+ * Clase(entidad) administrador y sus respectivos atributos.
+ * @author Erika Masache
+ * @author Jorge Mejía
  */
 @Entity
 @Table(name = "administrador")
